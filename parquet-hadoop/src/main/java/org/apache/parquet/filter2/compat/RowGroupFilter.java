@@ -42,11 +42,27 @@ import org.slf4j.LoggerFactory;
  * If the Filter is an {@link org.apache.parquet.filter.UnboundRecordFilter} or the no op filter,
  * no filtering will be performed.
  */
+
+
 public class RowGroupFilter implements Visitor<List<BlockMetaData>> {
   private final List<BlockMetaData> blocks;
   private final MessageType schema;
   private final List<FilterLevel> levels;
   private final ParquetFileReader reader;
+
+  public static class RowGroupFilterResult {
+    public final List<BlockMetaData> accepted;
+    public final List<BlockMetaData> rejected;
+
+    public RowGroupFilterResult(List<BlockMetaData> accepted, List<BlockMetaData> rejected) {
+      this.accepted = accepted;
+      this.rejected = rejected;
+    }
+  }
+
+  private static final ThreadLocal<RowGroupFilterResult> lastResult = new ThreadLocal<>();
+  public static RowGroupFilterResult getLastResult() { return lastResult.get(); }
+  public static void clearResult() { lastResult.remove(); }
 
   public enum FilterLevel {
     STATISTICS,
@@ -96,6 +112,9 @@ public class RowGroupFilter implements Visitor<List<BlockMetaData>> {
 
     List<BlockMetaData> filteredBlocks = new ArrayList<BlockMetaData>();
 
+    List<BlockMetaData> acceptedBlocks = new ArrayList<>();
+    List<BlockMetaData> rejectedBlocks = new ArrayList<>();
+
     for (BlockMetaData block : blocks) {
       boolean drop = false;
 
@@ -113,9 +132,12 @@ public class RowGroupFilter implements Visitor<List<BlockMetaData>> {
 
       if(!drop) {
         filteredBlocks.add(block);
+        acceptedBlocks.add(block);
+      } else {
+        rejectedBlocks.add(block);
       }
     }
-
+    lastResult.set(new RowGroupFilterResult(acceptedBlocks, rejectedBlocks));
     return filteredBlocks;
   }
 
