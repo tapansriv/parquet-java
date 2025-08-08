@@ -1,0 +1,11 @@
+Basing this off of version 1.13.1 to be compatible with the version of Spark I'm
+working with. That requires Thrift version 0.16.0, which is no longer in default
+Homebrew tap. Used this git repo for that
+
+https://github.com/cartman-kai/homebrew-thrift
+
+via 
+```
+brew tap cartman-kai/thrift
+brew install thrift@0.16
+```
