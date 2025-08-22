@@ -9,3 +9,9 @@ via
 brew tap cartman-kai/thrift
 brew install thrift@0.16
 ```
+
+Compiled the Parquet-Hadoop library this way to enable reflection despite
+running on Java 17--possibly a hack, but working for now
+```
+MAVEN_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED" mvn clean install -pl parquet-hadoop -DskipTests
+```
