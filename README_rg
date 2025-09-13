@@ -10,6 +10,8 @@ brew tap cartman-kai/thrift
 brew install thrift@0.16
 ```
 
+For mac. For Linux, follow instructions on main README for thrift installation.
+
 Compiled the Parquet-Hadoop library this way to enable reflection despite
 running on Java 17--possibly a hack, but working for now
 ```
