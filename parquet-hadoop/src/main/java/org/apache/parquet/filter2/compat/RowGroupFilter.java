@@ -40,8 +40,6 @@ import org.apache.parquet.schema.MessageType;
  * If the Filter is an {@link org.apache.parquet.filter.UnboundRecordFilter} or the no op filter,
  * no filtering will be performed.
  */
-
-
 public class RowGroupFilter implements Visitor<List<BlockMetaData>> {
   private final List<BlockMetaData> blocks;
   private final MessageType schema;
@@ -59,8 +57,14 @@ public class RowGroupFilter implements Visitor<List<BlockMetaData>> {
   }
 
   private static final ThreadLocal<RowGroupFilterResult> lastResult = new ThreadLocal<>();
-  public static RowGroupFilterResult getLastResult() { return lastResult.get(); }
-  public static void clearResult() { lastResult.remove(); }
+
+  public static RowGroupFilterResult getLastResult() {
+    return lastResult.get();
+  }
+
+  public static void clearResult() {
+    lastResult.remove();
+  }
 
   public enum FilterLevel {
     STATISTICS,
